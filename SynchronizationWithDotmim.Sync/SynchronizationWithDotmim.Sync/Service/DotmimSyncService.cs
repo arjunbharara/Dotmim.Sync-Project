@@ -5,65 +5,105 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dotmim.Sync.Enumerations;
 
 namespace SynchronizationWithDotmim.Sync.Service
 {
     public class DotmimSyncService : IDotmimSyncService
        {
-        private readonly string _primaryConnectionString;
-        private readonly string _secondaryConnectionString;
-        private SyncSetup _syncSetup;
-        private SqlSyncProvider _serverProvider;
-        private SqlSyncProvider _clientProvider;
+        private  string _sourceConnectionString;
+        private  string _destinationConnectionString;
         private SyncAgent _syncAgent;
 
-        public DotmimSyncService(string primaryConnectionString, string secondaryConnectionString)
+
+        public void InitializeAsync(string sourceConnectionString, string destinationConnectionString)
+        {
+            _sourceConnectionString = sourceConnectionString;
+            _destinationConnectionString = destinationConnectionString;
+
+            var sourceProvider = new SqlSyncProvider(_sourceConnectionString);
+            var destinationProvider = new SqlSyncProvider(_destinationConnectionString);
+
+            _syncAgent = new SyncAgent(sourceProvider, destinationProvider);
+
+          
+        }
+
+        public async Task  ProvisionAsync()
+        {
+            try {
+
+                //provisioning the remote (server) side 
+                var setup = new SyncSetup( "ProductModel", "Product",
+                         "Address", "Customer", "CustomerAddress");
+
+                // Provision everything needed by the setup
+                await _syncAgent.RemoteOrchestrator.ProvisionAsync(setup);
+
+                // Getting the server scope from server side
+                var serverScope =await _syncAgent.RemoteOrchestrator.GetScopeInfoAsync();
+
+                // Provision everything needed (sp, triggers, tracking tables, AND TABLES)
+                  await  _syncAgent.LocalOrchestrator.ProvisionAsync(serverScope);
+
+                Console.WriteLine("Provisioning Completed");
+             }
+             catch (Exception ex)
             {
-                _primaryConnectionString = primaryConnectionString;
-                _secondaryConnectionString = secondaryConnectionString;
+                Console.WriteLine($"Error during provisioning: {ex.Message}");
             }
+        }
 
-        public async Task InitializeAsync()
+
+        public async Task SyncDatabasesAsync()
         {
-            // Define the sync setup with scope and tables
-            _syncSetup = new SyncSetup("ExampleScope")
+            try
+            { 
+                var result =await _syncAgent.SynchronizeAsync();
+
+                Console.WriteLine(result);
+                Console.WriteLine("Sync result:");
+                Console.WriteLine($"Total changes applied on client: {result.ChangesAppliedOnClient}");
+                Console.WriteLine($"Total changes applied on server: {result.ChangesAppliedOnServer}");
+                Console.WriteLine($"Total resolved conflicts: {result.TotalResolvedConflicts}");
+                Console.WriteLine($"Total comleted Time: {result.CompleteTime}");
+                await Task.CompletedTask;
+            }
+            catch (Exception ex)
             {
-                Tables = {"Employees"}
-            };
-
-            // Initialize providers with connection strings
-            _serverProvider = new SqlSyncProvider(_primaryConnectionString);
-            _clientProvider = new SqlSyncProvider(_secondaryConnectionString);
-
-            // Initialize SyncAgent with providers and setup
-            _syncAgent = new SyncAgent(_serverProvider, _clientProvider);
-
-            Console.WriteLine("Initialization complete.");
+                Console.WriteLine($"Error during synchronization: {ex.Message}");
+            }
         }
 
-        Task IDotmimSyncService.DeprovisionAsync()
+         public async Task DeprovisionAsync()
+        {
+           //Deprovisioning server side
+            // Deprovision everything
+            var p = SyncProvision.ScopeInfo | SyncProvision.ScopeInfoClient |
+                    SyncProvision.StoredProcedures | SyncProvision.TrackingTable |
+                    SyncProvision.Triggers;
+
+            // Deprovision everything
+            await _syncAgent.RemoteOrchestrator.DeprovisionAsync(p);
+
+
+            //deprovisioning client side
+            // Deprovision everything
+            await _syncAgent.LocalOrchestrator.DeprovisionAsync(p);
+        }
+
+
+        void IDotmimSyncService.ValidateConfigurationAsync()
         {
             throw new NotImplementedException();
         }
 
-        Task IDotmimSyncService.InitializeAsync()
-        {
-            throw new NotImplementedException();
-        }
 
-        Task IDotmimSyncService.ProvisionAsync()
+        //customizing the Scope table name
+        public void CustomizeScopeInfo(string tableName)
         {
-            throw new NotImplementedException();
-        }
-
-        Task IDotmimSyncService.SyncDatabasesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IDotmimSyncService.ValidateConfigurationAsync()
-        {
-            throw new NotImplementedException();
+            var options = new SyncOptions();
+            options.ScopeInfoTableName = tableName;
         }
     }
 }

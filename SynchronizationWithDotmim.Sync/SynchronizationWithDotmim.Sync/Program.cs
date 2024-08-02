@@ -7,17 +7,40 @@ using System.Threading.Tasks;
 
 namespace SynchronizationWithDotmim.Sync
 {
-    internal class Program
+    public  class Program
     {
-        static void Main(string[] args)
-        {
-                string primaryConnectionString = "Server=LAPTOP-6326L1VA\\91745;Database=databaseA;Trusted_Connection=True;";
-                string secondaryConnectionString = "Server=LAPTOP-6326L1VA\\91745;Database=databaseB;Trusted_Connection=True;";
+        private static string serverConnectionString = $" Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog=AdventureWorks;Integrated Security=true;";
+       
+        private static string clientConnectionString = $" Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog=Client;Integrated Security=true;";
 
-                IDotmimSyncService syncService = new DotmimSyncService(primaryConnectionString, secondaryConnectionString);
+        public async static Task Main()
+        {
+            try
+            {
+                IDotmimSyncService syncService = new DotmimSyncService();
 
                 Console.WriteLine("Initializing...");
-                 syncService.InitializeAsync();
+                syncService.InitializeAsync(clientConnectionString, serverConnectionString);
+
+                 Console.WriteLine("starting Provisioning");
+                 await syncService.ProvisionAsync();
+
+                await syncService.SyncDatabasesAsync();
+               // await syncService.DeprovisionAsync();
+
+                Console.WriteLine("Hello World!");
+                Console.WriteLine("Synchronization completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                // Prevent console from closing automatically
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadLine();
+            }
         }
     }
 }

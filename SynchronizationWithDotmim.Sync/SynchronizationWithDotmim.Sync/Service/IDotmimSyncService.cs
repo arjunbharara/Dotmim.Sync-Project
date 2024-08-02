@@ -8,9 +8,9 @@ namespace SynchronizationWithDotmim.Sync.Service
 {
     internal interface IDotmimSyncService
     {
-        Task InitializeAsync();
+        void InitializeAsync(string sourceConnectionString, string destinationConnectionString);
         Task ProvisionAsync();
-        Task ValidateConfigurationAsync();
+        void ValidateConfigurationAsync();
         Task SyncDatabasesAsync();
         Task DeprovisionAsync();
     }
