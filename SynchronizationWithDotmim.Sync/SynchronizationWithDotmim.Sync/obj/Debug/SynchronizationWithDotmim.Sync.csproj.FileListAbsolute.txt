@@ -234,3 +234,5 @@ D:\arjun\ASPNET\Dotmim.Sync-Project\SynchronizationWithDotmim.Sync\Synchronizati
 D:\arjun\ASPNET\Dotmim.Sync-Project\SynchronizationWithDotmim.Sync\SynchronizationWithDotmim.Sync\bin\Debug\zh-Hans\Microsoft.Data.SqlClient.resources.dll
 D:\arjun\ASPNET\Dotmim.Sync-Project\SynchronizationWithDotmim.Sync\SynchronizationWithDotmim.Sync\bin\Debug\zh-Hant\Microsoft.Data.SqlClient.resources.dll
 D:\arjun\ASPNET\Dotmim.Sync-Project\SynchronizationWithDotmim.Sync\SynchronizationWithDotmim.Sync\obj\Debug\Synchron.B420DA59.Up2Date
+D:\arjun\ASPNET\Dotmim.Sync-Project\SynchronizationWithDotmim.Sync\SynchronizationWithDotmim.Sync\bin\Debug\Microsoft.Extensions.DependencyInjection.dll
+D:\arjun\ASPNET\Dotmim.Sync-Project\SynchronizationWithDotmim.Sync\SynchronizationWithDotmim.Sync\bin\Debug\Microsoft.Extensions.DependencyInjection.xml

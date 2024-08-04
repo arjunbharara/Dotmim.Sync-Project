@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SynchronizationWithDotmim.Sync
@@ -11,10 +12,11 @@ namespace SynchronizationWithDotmim.Sync
     {
         private static string serverConnectionString = $" Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog=AdventureWorks;Integrated Security=true;";
        
-        private static string clientConnectionString = $" Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog=Client;Integrated Security=true;";
-
+        private static string clientConnectionString = $" Data Source = (localdb)\\ProjectModels; Initial Catalog=AdventureWorks;Integrated Security=true;";
+      
         public async static Task Main()
         {
+            CancellationTokenSource cts = new CancellationTokenSource();
             try
             {
                 IDotmimSyncService syncService = new DotmimSyncService();
@@ -25,11 +27,44 @@ namespace SynchronizationWithDotmim.Sync
                  Console.WriteLine("starting Provisioning");
                  await syncService.ProvisionAsync();
 
-                await syncService.SyncDatabasesAsync();
-               // await syncService.DeprovisionAsync();
+                Task syncTask = Task.Run(async () =>
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            await syncService.SyncDatabasesAsync();
+                            Console.WriteLine("Synchronization completed successfully at {0}.", DateTime.Now);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error during synchronization: " + ex.Message);
+                        }
+                        try
+                        {
+                            await Task.Delay(TimeSpan.FromMinutes(1), cts.Token);
+                        catch (TaskCanceledException)
+                        {
+                            break;
+                        }
+                        
+                    }
+                }, cts.Token);
 
-                Console.WriteLine("Hello World!");
-                Console.WriteLine("Synchronization completed successfully.");
+                Console.ReadKey();
+
+                // Cancel the synchronization loop
+                cts.Cancel();
+
+                // Wait for the task to complete
+                await syncTask;
+
+                Console.WriteLine("Synchronization stopped.");
+                await syncService.SyncDatabasesAsync();
+
+                //Deprovisioning
+               //await syncService.DeprovisionAsync();
+                
             }
             catch (Exception ex)
             {

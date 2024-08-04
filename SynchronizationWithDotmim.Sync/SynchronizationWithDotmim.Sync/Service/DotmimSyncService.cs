@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dotmim.Sync.Enumerations;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SynchronizationWithDotmim.Sync.Service
 {
@@ -14,7 +15,7 @@ namespace SynchronizationWithDotmim.Sync.Service
         private  string _sourceConnectionString;
         private  string _destinationConnectionString;
         private SyncAgent _syncAgent;
-
+        private readonly string scopeName="AccopsScope";
 
         public void InitializeAsync(string sourceConnectionString, string destinationConnectionString)
         {
@@ -23,7 +24,10 @@ namespace SynchronizationWithDotmim.Sync.Service
 
             var sourceProvider = new SqlSyncProvider(_sourceConnectionString);
             var destinationProvider = new SqlSyncProvider(_destinationConnectionString);
-
+            var syncOptions = new SyncOptions
+            {
+                ScopeInfoTableName = scopeName
+            };
             _syncAgent = new SyncAgent(sourceProvider, destinationProvider);
 
           
@@ -34,18 +38,27 @@ namespace SynchronizationWithDotmim.Sync.Service
             try {
 
                 //provisioning the remote (server) side 
-                var setup = new SyncSetup( "ProductModel", "Product",
-                         "Address", "Customer", "CustomerAddress");
+                var tables = new string[] {"ProductModel",
+                    "Product",
+                    "Address", "Customer", "CustomerAddress",
+                    "SalesOrderHeader" };
 
+                var setup = new SyncSetup( tables);
+                {
+                  
+                };
+                // selecting which coloumns to add for synchronization.
+                 setup.Tables["Product"].Columns.AddRange(new[] {"ProductId","Name","ProductNumber","Color", });
+               
                 // Provision everything needed by the setup
-                await _syncAgent.RemoteOrchestrator.ProvisionAsync(setup);
+                await _syncAgent.RemoteOrchestrator.ProvisionAsync(scopeName, setup);
 
                 // Getting the server scope from server side
-                var serverScope =await _syncAgent.RemoteOrchestrator.GetScopeInfoAsync();
-
+                var serverScope =await _syncAgent.RemoteOrchestrator.GetScopeInfoAsync(scopeName);
+                
                 // Provision everything needed (sp, triggers, tracking tables, AND TABLES)
                   await  _syncAgent.LocalOrchestrator.ProvisionAsync(serverScope);
-
+               
                 Console.WriteLine("Provisioning Completed");
              }
              catch (Exception ex)
@@ -62,11 +75,7 @@ namespace SynchronizationWithDotmim.Sync.Service
                 var result =await _syncAgent.SynchronizeAsync();
 
                 Console.WriteLine(result);
-                Console.WriteLine("Sync result:");
-                Console.WriteLine($"Total changes applied on client: {result.ChangesAppliedOnClient}");
-                Console.WriteLine($"Total changes applied on server: {result.ChangesAppliedOnServer}");
-                Console.WriteLine($"Total resolved conflicts: {result.TotalResolvedConflicts}");
-                Console.WriteLine($"Total comleted Time: {result.CompleteTime}");
+                Console.WriteLine("Synchronization completed successfully.");
                 await Task.CompletedTask;
             }
             catch (Exception ex)
@@ -77,19 +86,20 @@ namespace SynchronizationWithDotmim.Sync.Service
 
          public async Task DeprovisionAsync()
         {
-           //Deprovisioning server side
-            // Deprovision everything
+            //Deprovisioning server side
+            //Deprovision everything
             var p = SyncProvision.ScopeInfo | SyncProvision.ScopeInfoClient |
                     SyncProvision.StoredProcedures | SyncProvision.TrackingTable |
                     SyncProvision.Triggers;
 
             // Deprovision everything
-            await _syncAgent.RemoteOrchestrator.DeprovisionAsync(p);
-
+            await _syncAgent.RemoteOrchestrator.DeprovisionAsync(scopeName,p);
+            Console.WriteLine($"DeProvisoned sucessfully server");
 
             //deprovisioning client side
-            // Deprovision everything
-            await _syncAgent.LocalOrchestrator.DeprovisionAsync(p);
+            //Deprovision everything
+            await _syncAgent.LocalOrchestrator.DeprovisionAsync(scopeName,p);
+            Console.WriteLine($"DeProvisoned sucessfully clinet");
         }
 
 
