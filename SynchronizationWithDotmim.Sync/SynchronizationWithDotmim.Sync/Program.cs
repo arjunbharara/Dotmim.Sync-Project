@@ -25,7 +25,10 @@ namespace SynchronizationWithDotmim.Sync
                 syncService.InitializeAsync(clientConnectionString, serverConnectionString);
 
                  Console.WriteLine("starting Provisioning");
-                 await syncService.ProvisionAsync();
+               // await syncService.ProvisionAsync();
+
+                //Migration with signle column
+                await syncService.Recongiure();
 
                 Task syncTask = Task.Run(async () =>
                 {
@@ -43,11 +46,12 @@ namespace SynchronizationWithDotmim.Sync
                         try
                         {
                             await Task.Delay(TimeSpan.FromMinutes(1), cts.Token);
+                        }
                         catch (TaskCanceledException)
                         {
                             break;
                         }
-                        
+
                     }
                 }, cts.Token);
 
@@ -60,10 +64,10 @@ namespace SynchronizationWithDotmim.Sync
                 await syncTask;
 
                 Console.WriteLine("Synchronization stopped.");
-                await syncService.SyncDatabasesAsync();
+
 
                 //Deprovisioning
-               //await syncService.DeprovisionAsync();
+               // await syncService.DeprovisionAsync();
                 
             }
             catch (Exception ex)

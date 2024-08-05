@@ -13,5 +13,6 @@ namespace SynchronizationWithDotmim.Sync.Service
         void ValidateConfigurationAsync();
         Task SyncDatabasesAsync();
         Task DeprovisionAsync();
+        Task Recongiure();
     }
 }
