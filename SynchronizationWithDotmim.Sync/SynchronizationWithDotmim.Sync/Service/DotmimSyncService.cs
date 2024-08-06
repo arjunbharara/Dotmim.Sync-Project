@@ -41,6 +41,7 @@ namespace SynchronizationWithDotmim.Sync.Service
             {
 
             };
+
             // selecting which coloumns to add for synchronization.
             setup.Tables["Product"].Columns.AddRange(new[] { "ProductId", "Name", "ProductNumber", "Color", });
         }
@@ -48,7 +49,7 @@ namespace SynchronizationWithDotmim.Sync.Service
         public async Task  ProvisionAsync()
         {
             try {
-               
+
                 // Provision everything needed by the setup
                 await _syncAgent.RemoteOrchestrator.ProvisionAsync(scopeName, setup);
 
@@ -65,7 +66,6 @@ namespace SynchronizationWithDotmim.Sync.Service
                 Console.WriteLine($"Error during provisioning: {ex.Message}");
             }
         }
-
 
         public async Task SyncDatabasesAsync()
         {
@@ -110,25 +110,30 @@ namespace SynchronizationWithDotmim.Sync.Service
         public async Task Recongiure()
         {
             Console.WriteLine("Inside the Reconfigure method");
-           /* DBHelp.RemoveCreateDateColumnFromAddress(new SqlConnection(_destinationConnectionString));
+            /*DBHelp.RemoveCreateDateColumnFromAddress(new SqlConnection(_destinationConnectionString));
             Console.WriteLine("column removed sucessfully");*/
 
-            DBHelp.AddNewColumnToAddressAsync(new SqlConnection(_destinationConnectionString));
-            Console.WriteLine("Column added in address table on server side");
+            /*DBHelp.AddNewColumnToAddressAsync(new SqlConnection(_destinationConnectionString));
+            Console.WriteLine("Column added in address table on server side");*/
 
             var progress = new SynchronousProgress<ProgressArgs>(args => Console.WriteLine($"{args.ProgressPercentage:p}:\t{args.Message}"));
 
             var result = await _syncAgent.RemoteOrchestrator.ProvisionAsync(scopeName, setup, overwrite: true, progress: progress);
-
+            if (result != null)
+            {
+                Console.WriteLine("Server provisioning successful with the new column added to the Address table.");
+            }
             Console.WriteLine("server is provisioned with new column added to the adderess table");
 
+            //migration on local side
+          /*  DBHelp.AddNewColumnToAddressAsync(new SqlConnection(_sourceConnectionString));
+            Console.WriteLine("Column added in address table on local side");*/
 
-            //Provisioning the Client side
+            //Provisioning the local side
             Console.WriteLine("provisioning the client side");
             var serverScopeInfo = await _syncAgent.RemoteOrchestrator.GetScopeInfoAsync(scopeName);
             var clinetScopeInfo = await _syncAgent.LocalOrchestrator.ProvisionAsync(serverScopeInfo, overwrite: true, progress: progress);
-            Console.WriteLine("client side is also provisioned with new column added to the client database");
-            await _syncAgent.SynchronizeAsync(scopeName, SyncType.ReinitializeWithUpload);
+            Console.WriteLine("client side is also provisioned with new column added to the local database");
         }
 
 
@@ -148,5 +153,9 @@ namespace SynchronizationWithDotmim.Sync.Service
             throw new NotImplementedException();
         }
 
+        void IDotmimSyncService.AddData()
+        {
+            DBHelp.InsertOneAddressWithNewColumnAsync(new SqlConnection(_destinationConnectionString));
+        }
     }
 }
