@@ -19,6 +19,9 @@ namespace SynchronizationWithDotmim.Sync.Service
         private SyncAgent _syncAgent;
         private readonly string scopeName="AccopsScope";
         private  SyncSetup setup;
+
+
+        //Initializing the basic setup
         public void InitializeAsync(string sourceConnectionString, string destinationConnectionString)
         {
             _sourceConnectionString = sourceConnectionString;
@@ -31,6 +34,7 @@ namespace SynchronizationWithDotmim.Sync.Service
                 ScopeInfoTableName = scopeName
             };
             _syncAgent = new SyncAgent(sourceProvider, destinationProvider);
+
             //provisioning the remote (server) side 
             var tables = new string[] {"ProductModel",
                     "Product",
@@ -87,8 +91,6 @@ namespace SynchronizationWithDotmim.Sync.Service
          public async Task DeprovisionAsync()
         {
             //Deprovisioning server side
-
-            //DeProvisioning specific tables metadata
             
             //Deprovision everything
             var p = SyncProvision.ScopeInfo | SyncProvision.ScopeInfoClient |
@@ -110,11 +112,6 @@ namespace SynchronizationWithDotmim.Sync.Service
         public async Task Recongiure()
         {
             Console.WriteLine("Inside the Reconfigure method");
-            /*DBHelp.RemoveCreateDateColumnFromAddress(new SqlConnection(_destinationConnectionString));
-            Console.WriteLine("column removed sucessfully");*/
-
-            /*DBHelp.AddNewColumnToAddressAsync(new SqlConnection(_destinationConnectionString));
-            Console.WriteLine("Column added in address table on server side");*/
 
             var progress = new SynchronousProgress<ProgressArgs>(args => Console.WriteLine($"{args.ProgressPercentage:p}:\t{args.Message}"));
 
@@ -125,10 +122,6 @@ namespace SynchronizationWithDotmim.Sync.Service
             }
             Console.WriteLine("server is provisioned with new column added to the adderess table");
 
-            //migration on local side
-          /*  DBHelp.AddNewColumnToAddressAsync(new SqlConnection(_sourceConnectionString));
-            Console.WriteLine("Column added in address table on local side");*/
-
             //Provisioning the local side
             Console.WriteLine("provisioning the client side");
             var serverScopeInfo = await _syncAgent.RemoteOrchestrator.GetScopeInfoAsync(scopeName);
@@ -136,8 +129,11 @@ namespace SynchronizationWithDotmim.Sync.Service
             Console.WriteLine("client side is also provisioned with new column added to the local database");
         }
 
-
-     
+        //Second Method for Reconfiguration
+        public async Task Reconfigure2()
+        {
+                
+        }
 
         //customizing the Scope table name
         public void CustomizeScopeInfo(string tableName)
@@ -153,9 +149,6 @@ namespace SynchronizationWithDotmim.Sync.Service
             throw new NotImplementedException();
         }
 
-        void IDotmimSyncService.AddData()
-        {
-            DBHelp.InsertOneAddressWithNewColumnAsync(new SqlConnection(_destinationConnectionString));
-        }
+      
     }
 }

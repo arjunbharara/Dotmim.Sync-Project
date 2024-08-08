@@ -14,6 +14,6 @@ namespace SynchronizationWithDotmim.Sync.Service
         Task SyncDatabasesAsync();
         Task DeprovisionAsync();
         Task Recongiure();
-        void AddData();
+        Task Reconfigure2();
     }
 }
