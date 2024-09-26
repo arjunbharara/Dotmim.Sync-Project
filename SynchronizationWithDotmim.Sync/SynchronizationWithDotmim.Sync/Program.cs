@@ -9,126 +9,128 @@ using System.Threading.Tasks;
 using System.Configuration;
 using System.IO;
 using System.Windows.Markup;
+using Dotmim.Sync;
+using System.Runtime.InteropServices;
+using Microsoft.Build.Tasks;
+using Microsoft.Win32;
 
 namespace SynchronizationWithDotmim.Sync
 {
     public  class Program
     {
-        //fetcching the connection string from the A[[.config file
-        private static readonly string serverConnectionString = ConfigurationManager.ConnectionStrings["Conn1"].ConnectionString;
-        private static readonly string clientConnectionString = ConfigurationManager.ConnectionStrings["Conn2"].ConnectionString;
-
-
+        
+        private static string secondaryConnectionString = null;
+        private static string primaryConnectionString = null;
+        private static readonly string scopeName = "HyworksScope";
+        private static readonly string databaseName="AdventureWorks";
+        private static string _serverType = null;
+        private static string SchemaChange = "false";
+        private static string connectionString=string.Empty;
+        private static string ServerID = String.Empty;
+        private static string Deprovision = null;
+        //dependency injecton of service
+        private static IDotmimSyncService syncService = new DotmimSyncService();
+      
         public async static Task Main()
         {
             CancellationTokenSource cts = new CancellationTokenSource();
-            try
-            {
-                Console.WriteLine(serverConnectionString);
-                Console.WriteLine(clientConnectionString);
-             
+            try {
+                Console.WriteLine("Enter databse connection string");
+                connectionString= Console.ReadLine();
 
-                IDotmimSyncService syncService = new DotmimSyncService();
-                Console.WriteLine("Initializing...");
-                syncService.InitializeAsync(clientConnectionString, serverConnectionString);
+                //assigning connection strings
+                string sqlScript1 = @"
+            SELECT 
+                Server_Type,
+                Connection_String,
+                Server_Id
+            FROM 
+                databaseInfo; ";
 
-                //database exist logic
-
-
-
-                string sqlScript = @"
-                    USE AdventureWorks;
-                    SELECT 
-                         server_type
-                    FROM 
-                    databaseInfo;
-                        ";
-
-                string serverType = null;
-                try
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlConnection connection = new SqlConnection(serverConnectionString))
+                    SqlCommand cmd = new SqlCommand(sqlScript1, conn);
+                    conn.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        SqlCommand command = new SqlCommand(sqlScript, connection);
-                        connection.Open();
-                        SqlDataReader reader = command.ExecuteReader();
-                        if (reader.Read())
+                        while (reader.Read())
                         {
-                            serverType = reader["server_type"] as string;
+                            string SType = reader["Server_Type"].ToString();
+                            string connString = reader["Connection_String"].ToString();
+
+                            if (SType == "primary")
+                            {
+                                primaryConnectionString = connString;
+                                Console.WriteLine("primary " + connString);
+                            }
+                            else if (SType == "secondary")
+                            {
+                                secondaryConnectionString = connString;
+                                Console.WriteLine("secondary " + connString);
+                            }
                         }
                     }
                 }
-                catch(Exception ex)
+
+                //Initilizing the Databases with syncAgent.
+                Console.WriteLine("Initializing the SyncAgent");
+                syncService.InitializeAsync(secondaryConnectionString, primaryConnectionString);
+
+                //setting the registry keys values
+                assignKeys();
+
+                if (Deprovision.Equals("true"))
                 {
-                    Console.WriteLine("An error occurred: " + ex.Message);
+                   
+                    await  syncService.DeprovisionAsync(scopeName);
+                    return;
                 }
-                // Output the server type
-                Console.WriteLine($"Server Type: {serverType}");
-                //checking the connection of local server
-                try
+                if (SchemaChange.Equals("true"))
                 {
-                    using (SqlConnection connection = new SqlConnection(clientConnectionString))
-                    {
-                        SqlCommand command = new SqlCommand(sqlScript, connection);
-                        connection.Open();
-                        SqlDataReader reader = command.ExecuteReader();
-                        if (reader.Read())
-                        {
-                            serverType = reader["server_type"] as string;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("An error occurred: " + ex.Message);
-                }
-
-                // Output the server type
-                Console.WriteLine($"Server Type: {serverType}");
-
-
-                if (serverType == "primary server")
-                {
-                    Console.WriteLine("starting Provisioning");
-                    await syncService.ProvisionAsync();
-
+                    var tables = new string[] { "Department", "Employee", "Task" };
+                    await DotmimSyncService.Reconfigure2(scopeName, connectionString, tables);
+                   // await syncService.Recongiure(scopeName, connectionString, tables);
+                    Console.WriteLine("Please start the syncing.");
+                    return;
                 }
 
                 Task syncTask = Task.Run(async () =>
                 {
-                    while (!cts.Token.IsCancellationRequested)
-                    {
-                        try
-                        {
-                            await syncService.SyncDatabasesAsync();
-                            Console.WriteLine("Synchronization completed successfully at {0}.", DateTime.Now);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("Error during synchronization: " + ex.Message);
-                        }
-                        try
-                        {
-                            await Task.Delay(TimeSpan.FromMinutes(1), cts.Token);
-                        }
-                        catch (TaskCanceledException)
-                        {
-                            break;
-                        }
+                        while (!cts.Token.IsCancellationRequested)
+                      {
 
-                    }
+                                try
+                                {
+                                await Sync();
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("Error during synchronization: " + ex.Message);
+                                }
+                            try
+                            {
+                                await Task.Delay(TimeSpan.FromSeconds(30), cts.Token);
+                            }
+                            catch (TaskCanceledException)
+                            {
+                                break;
+                            }
+
+                      }
                 }, cts.Token);
 
-                Console.ReadKey();
+                 Console.ReadKey();
 
-                // Cancel the synchronization loop
-                cts.Cancel();
+                    // Cancel the synchronization loop
+                    cts.Cancel();
 
-                // Wait for the task to complete
-                await syncTask;
+                    // Wait for the task to complete
+                    await syncTask;
 
-                Console.WriteLine("Synchronization stopped.");
-                
+                    Console.WriteLine("Synchronization stopped.");
+              
             }
             catch (Exception ex)
             {
@@ -139,7 +141,150 @@ namespace SynchronizationWithDotmim.Sync
                 // Prevent console from closing automatically
                 Console.WriteLine("Press any key to exit...");
                 Console.ReadLine();
+            } 
+        }
+      
+        //Assigning the Registry values
+        public static void assignKeys()
+        {
+            //registry value names
+            string valueName = "ServerId";
+            string valueName2 = "SchemaChange";
+            string valueName3 = "Deprovision";
+            string registryKeyPath = @"DbSync";
+            // Open the registry key
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(registryKeyPath))
+            {
+                if (key != null)
+                {
+                    // Retrieve the value
+                    object value = key.GetValue(valueName);
+                    object value2=key.GetValue(valueName2);
+                    object value3=key.GetValue(valueName3);
+                    if (value != null)
+                    {
+
+                        ServerID = value.ToString();
+                       
+                    }
+                    else
+                    {
+                        Console.WriteLine(" ServerID Value not found.");
+                    }
+                    if (value2 != null)
+                    {
+                        SchemaChange = value2.ToString();
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine("SchemaChange Value not found.");
+                    }
+                    if (value3 != null)
+                    {
+                        Deprovision=value3.ToString();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Deprovision Value not found.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Registry key not found.");
+                }
             }
+           
+        }
+
+
+        //Sync Method 
+        public static  async Task Sync()
+        {
+            //checking if it is primary or secondary
+            assignKeys(); 
+            //Sql server script 
+            string sqlScript = @"
+            SELECT 
+                Server_Type
+               
+            FROM 
+                databaseInfo
+            WHERE 
+                Server_Id = @Server_Id;";
+
+            //making connection to the database
+            string serverType = String.Empty;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(sqlScript, conn);
+                cmd.Parameters.AddWithValue("@Server_Id", ServerID);
+                conn.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        serverType = reader["Server_Type"].ToString();
+                        Console.WriteLine(serverType);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No matching record found in the database.");
+                    }
+                }
+            }
+
+            //assining the scopeType for the firsttime
+            if (_serverType == null)
+            {
+                _serverType = serverType;
+            }
+            // checking which side it is currently
+            if (_serverType != serverType)
+            {
+                _serverType = serverType;
+                changeMode();
+            }
+            else if (_serverType == "secondary"  && _serverType.Equals(serverType))
+            {
+
+                //database exist logic
+                DBHelp.EnsureDatabaseExists(primaryConnectionString, databaseName);
+                DBHelp.EnsureDatabaseExists(secondaryConnectionString, databaseName);
+                //providing selected tables for setup
+                var tables = new string[] { "Department", "Employee", "Task" };
+                SyncResult res=await syncService.SyncDatabasesAsync(scopeName, tables);
+                if (res.TotalChangesFailedToApplyOnServer > 0)
+                {
+                    syncService.SyncApplyRemoteFailed(res);
+                }
+                if (res.TotalChangesFailedToApplyOnClient > 0)
+                {
+                    syncService.SyncApplyLocalFailed(res);
+                }
+               
+            }else if(_serverType=="primary" && _serverType.Equals(serverType))
+            {
+                Console.WriteLine("This is primary server.");
+                return;
+            }
+           
+        }
+        //this method called when you change the mode of servers
+        public static void changeMode()
+        {
+            Console.WriteLine("inside ChangeMode method");
+            switchConnString(primaryConnectionString, secondaryConnectionString);
+            syncService.ReInitialize(secondaryConnectionString, primaryConnectionString,scopeName);
+
+        }
+
+        public static void switchConnString(string ps, string sc)
+        {
+            string temp = ps;
+            primaryConnectionString = sc;
+            secondaryConnectionString = temp;
         }
     }
 }

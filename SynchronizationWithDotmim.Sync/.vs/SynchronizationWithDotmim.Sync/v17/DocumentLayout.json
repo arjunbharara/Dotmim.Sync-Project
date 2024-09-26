@@ -1,40 +1,18 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\",
+  "WorkspaceRootPath": "D:\\DOTMIM\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|d:\\arjun\\aspnet\\dotmim.sync-project\\synchronizationwithdotmim.sync\\synchronizationwithdotmim.sync\\service\\dotmimsyncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|d:\\dotmim\\dotmim.sync-project\\synchronizationwithdotmim.sync\\synchronizationwithdotmim.sync\\service\\dotmimsyncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|solutionrelative:synchronizationwithdotmim.sync\\service\\dotmimsyncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\synchronizationwithdotmim.sync\\service\\idotmimsyncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|D:\\DOTMIM\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\synchronizationwithdotmim.sync\\service\\idotmimsyncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|solutionrelative:synchronizationwithdotmim.sync\\service\\idotmimsyncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\synchronizationwithdotmim.sync\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|D:\\DOTMIM\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\synchronizationwithdotmim.sync\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|solutionrelative:synchronizationwithdotmim.sync\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\synchronizationwithdotmim.sync\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|solutionrelative:synchronizationwithdotmim.sync\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|d:\\arjun\\aspnet\\dotmim.sync-project\\synchronizationwithdotmim.sync\\synchronizationwithdotmim.sync\\fetchdatabaseinfo.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
-      "RelativeMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|solutionrelative:synchronizationwithdotmim.sync\\fetchdatabaseinfo.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\synchronizationwithdotmim.sync\\dbhelp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|solutionrelative:synchronizationwithdotmim.sync\\dbhelp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__ProjectModels/AdventureWorks/True/SqlTable/dbo.scope_info_client.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/AdventureWorks/True/SqlTable/dbo.Address.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|d:\\arjun\\aspnet\\dotmim.sync-project\\synchronizationwithdotmim.sync\\synchronizationwithdotmim.sync\\fetchdatabaseinfo.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame",
-      "RelativeMoniker": "D:0:0:{C866C893-F53D-4421-9B79-737A5F071EB7}|SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync.csproj|solutionrelative:synchronizationwithdotmim.sync\\fetchdatabaseinfo.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame"
     }
   ],
   "DocumentGroupContainers": [
@@ -44,103 +22,46 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 3,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\DOTMIM\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Program.cs",
+              "RelativeDocumentMoniker": "SynchronizationWithDotmim.Sync\\Program.cs",
+              "ToolTip": "D:\\DOTMIM\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Program.cs",
+              "RelativeToolTip": "SynchronizationWithDotmim.Sync\\Program.cs",
+              "ViewState": "AQIAAN0AAAAAAAAAAAAwwAABAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-31T10:39:52.369Z",
+              "IsPinned": true
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{74946827-37a0-11d2-a273-00c04f8ef4ff}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "FetchDatabaseInfo.sql ",
-              "DocumentMoniker": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\FetchDatabaseInfo.sql",
-              "RelativeDocumentMoniker": "SynchronizationWithDotmim.Sync\\FetchDatabaseInfo.sql",
-              "ToolTip": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\FetchDatabaseInfo.sql",
-              "RelativeToolTip": "SynchronizationWithDotmim.Sync\\FetchDatabaseInfo.sql",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-08-08T04:50:33.311Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Program.cs",
-              "RelativeDocumentMoniker": "SynchronizationWithDotmim.Sync\\Program.cs",
-              "ToolTip": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Program.cs",
-              "RelativeToolTip": "SynchronizationWithDotmim.Sync\\Program.cs",
-              "ViewState": "AQIAADAAAAAAAAAAAAAAAD8AAAARAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-31T10:39:52.369Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "App.config",
-              "DocumentMoniker": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\App.config",
-              "RelativeDocumentMoniker": "SynchronizationWithDotmim.Sync\\App.config",
-              "ToolTip": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\App.config",
-              "RelativeToolTip": "SynchronizationWithDotmim.Sync\\App.config",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAA2AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2024-08-06T11:49:39.451Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "dbo.scope_info_client [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__ProjectModels/AdventureWorks/True/SqlTable/dbo.scope_info_client.sql",
-              "ToolTip": "dbo.scope_info_client [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-08-06T05:08:42.683Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "dbo.Address [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/AdventureWorks/True/SqlTable/dbo.Address.sql",
-              "ToolTip": "dbo.Address [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-08-05T12:28:25.549Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "DBHelp.cs",
-              "DocumentMoniker": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\DBHelp.cs",
-              "RelativeDocumentMoniker": "SynchronizationWithDotmim.Sync\\DBHelp.cs",
-              "ToolTip": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\DBHelp.cs",
-              "RelativeToolTip": "SynchronizationWithDotmim.Sync\\DBHelp.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-05T05:19:22.636Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "IDotmimSyncService.cs",
-              "DocumentMoniker": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Service\\IDotmimSyncService.cs",
+              "DocumentMoniker": "D:\\DOTMIM\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Service\\IDotmimSyncService.cs",
               "RelativeDocumentMoniker": "SynchronizationWithDotmim.Sync\\Service\\IDotmimSyncService.cs",
-              "ToolTip": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Service\\IDotmimSyncService.cs",
+              "ToolTip": "D:\\DOTMIM\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Service\\IDotmimSyncService.cs",
               "RelativeToolTip": "SynchronizationWithDotmim.Sync\\Service\\IDotmimSyncService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAABgAAAA",
+              "ViewState": "AQIAAAMAAAAAAAAAAADgvxwAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-05T05:10:47.519Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-20T14:40:17.407Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "DotmimSyncService.cs",
-              "DocumentMoniker": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Service\\DotmimSyncService.cs",
+              "DocumentMoniker": "D:\\DOTMIM\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Service\\DotmimSyncService.cs",
               "RelativeDocumentMoniker": "SynchronizationWithDotmim.Sync\\Service\\DotmimSyncService.cs",
-              "ToolTip": "D:\\arjun\\ASPNET\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Service\\DotmimSyncService.cs",
+              "ToolTip": "D:\\DOTMIM\\Dotmim.Sync-Project\\SynchronizationWithDotmim.Sync\\SynchronizationWithDotmim.Sync\\Service\\DotmimSyncService.cs",
               "RelativeToolTip": "SynchronizationWithDotmim.Sync\\Service\\DotmimSyncService.cs",
-              "ViewState": "AQIAABIAAAAAAAAAAAAAACQAAAAAAAAA",
+              "ViewState": "AQIAAIwAAAAAAAAAAAAwwLcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-31T11:02:27.385Z",
               "EditorCaption": ""

@@ -42,11 +42,11 @@ namespace SynchronizationWithDotmim.Sync
                                     (@AddressLine1 ,@City, @StateProvince, @CountryRegion, @PostalCode, @createDate);
                                     Select SCOPE_IDENTITY() as AddressID";
 
-                command.Parameters.AddWithValue("@AddressLine1", "1 barber avenue");
-                command.Parameters.AddWithValue("@City", "Munitan");
+                command.Parameters.AddWithValue("@AddressLine1", "1 baner road");
+                command.Parameters.AddWithValue("@City", "hinjewadi");
                 command.Parameters.AddWithValue("@StateProvince", "");
                 command.Parameters.AddWithValue("@CountryRegion", "");
-                command.Parameters.AddWithValue("@PostalCode", "0001");
+                command.Parameters.AddWithValue("@PostalCode", "500049");
                 command.Parameters.AddWithValue("@createDate", DateTime.Now);
 
                 c.Open();
@@ -55,6 +55,53 @@ namespace SynchronizationWithDotmim.Sync
 
 
                 return Convert.ToInt32(addressId);
+            }
+        }
+
+        public static void EnsureDatabaseExists(string connectionString, string databaseName)
+        {
+            //connect to the master database
+            string conn = connectionString.Replace("Initial Catalog=YourDatabaseName;", "Initial Catalog=master;");
+
+            using (var connection = new SqlConnection(conn))
+            {
+                try
+                {
+                    connection.Open();
+
+                    // Check if the database exists
+                    bool databaseExists = false;
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"IF EXISTS (SELECT name FROM sys.databases WHERE name = @databaseName)
+                                            SELECT 1 ELSE SELECT 0;";
+                        command.Parameters.AddWithValue("@databaseName", databaseName);
+
+                        int result = (int)command.ExecuteScalar();
+                        databaseExists = result == 1;
+                    }
+
+                    // If the database does not exist,create it
+                    if (!databaseExists)
+                    {
+                        using (var command = new SqlCommand())
+                        {
+                            command.Connection = connection;
+                            command.CommandText = $"CREATE DATABASE [{databaseName}]";
+                            command.ExecuteNonQuery();
+                            Console.WriteLine($"Database '{databaseName}' created successfully.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Database '{databaseName}' already exists.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
             }
         }
 
