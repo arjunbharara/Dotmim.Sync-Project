@@ -1,4 +1,4 @@
-﻿using Dotmim.Sync.SqlServer;
+﻿
 using Dotmim.Sync;
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,7 @@ using System.Configuration;
 using System.Data;
 using Microsoft.IdentityModel.Protocols;
 using System.Diagnostics;
+using Dotmim.Sync.SqlServer;
 
 
 namespace SynchronizationWithDotmim.Sync.Service
@@ -24,20 +25,20 @@ namespace SynchronizationWithDotmim.Sync.Service
     
 
         //Initializing the basic setup
-        public void InitializeAsync(string SecondaryConnection, string PrimaryConnection)
+        public void InitializeAsync(string LocalConnection, string RemoteConnection)
         {
 
-            var LocalProvider = new SqlSyncProvider(SecondaryConnection);
-            var ServerProvider = new SqlSyncProvider(PrimaryConnection);
+            var LocalProvider = new SqlSyncProvider(LocalConnection);
+            var ServerProvider = new SqlSyncProvider(RemoteConnection);
            
             //providing the customizable syncing options
             var syncOptions = new SyncOptions
             { 
                 CleanMetadatas=false,
                 ConflictResolutionPolicy=ConflictResolutionPolicy.ServerWins
-               // ErrorResolutionPolicy=ErrorResolution.
+                
             };
-
+            Console.WriteLine("Sync Agent got initialized");
             _syncAgent = new SyncAgent(LocalProvider, ServerProvider,syncOptions);
            
         }
@@ -48,6 +49,7 @@ namespace SynchronizationWithDotmim.Sync.Service
             try
             {
                 var setup = new SyncSetup(tables);
+                
                 //selecting which coloumns to add for synchronization for a particular table.
                /* setup.Tables["Orders"].Columns.AddRange(new[] { "OrderID", "OrderDate" });*/
 
@@ -90,27 +92,24 @@ namespace SynchronizationWithDotmim.Sync.Service
                         Console.WriteLine("Scope is not present");
                         //applying scope 
                         await ApplyScope(scopeName, tables);
-                        //await ApplyScopeWithFilter(scopeName);
-                        var parameters = new SyncParameters(("ProductCategoryID", new Guid("5515F857-075B-4F9A-87B7-43B4997077B3")));
-                        res = await _syncAgent.SynchronizeAsync(scopeName,progress:progress,parameters:parameters);
-                        Console.WriteLine(res);
-                        Console.WriteLine("Synchronization completed successfully at {0}.", DateTime.Now);
+                        //await ApplyScopeWithFilter(scopeName);                     
                     }
                     else
                     {
-                         res = await _syncAgent.SynchronizeAsync(scopeName,progress);
-                         Console.WriteLine(res);
-                         Console.WriteLine("Synchronization completed successfully at {0}.", DateTime.Now);
+                        Console.WriteLine("Scope is Present.");
                     }
+                    Console.WriteLine($"Synchronization is getting started for scope {scopeName} ");
+                    res = await _syncAgent.SynchronizeAsync(scopeName, progress: progress);
+                    Console.WriteLine(res);
+                    Console.WriteLine("Synchronization completed successfully at {0}.", DateTime.Now);
                 }
                 //if scope info table is not prersent in the database
                 else 
                 {
                     Console.WriteLine("Scope is not present");
                     await ApplyScope(scopeName, tables);
-                  //  await ApplyScopeWithFilter(scopeName);
-                    Console.WriteLine("Provisioned both databases.");
-                    res = await _syncAgent.SynchronizeAsync(scopeName, progress);
+                    Console.WriteLine($"Synchronization is getting started for scope {scopeName} ");
+                    res = await _syncAgent.SynchronizeAsync(scopeName, progress:progress);
                     Console.WriteLine(res);
                     Console.WriteLine("Synchronization completed successfully at {0}.", DateTime.Now);
                 }
@@ -131,7 +130,7 @@ namespace SynchronizationWithDotmim.Sync.Service
                     // Call the delete metadatas with this timestamp
                     await _syncAgent.RemoteOrchestrator.DeleteMetadatasAsync(minTimestamp.Value);*/
 
-                    if (res.TotalChangesFailedToApplyOnServer == 0)
+                  /*  if (res.TotalChangesFailedToApplyOnServer == 0)
                     {
                         var scope = await _syncAgent.RemoteOrchestrator.GetAllScopeInfoClientsAsync();
                         var lastSyncTimestamp = scope.Min(sic => sic.LastServerSyncTimestamp);
@@ -148,7 +147,7 @@ namespace SynchronizationWithDotmim.Sync.Service
                         {
                             await _syncAgent.LocalOrchestrator.DeleteMetadatasAsync(lastSyncTimestamp.Value);
                         }
-                    }
+                    }*/
                 }
                 await Task.CompletedTask;
                return res;
@@ -290,19 +289,24 @@ namespace SynchronizationWithDotmim.Sync.Service
             try
             {
                 var setup = new SyncSetup(tables);
+                // setup.Tables.Add("projects"); "Department", "Employee", "Task"
+                foreach (var table in tables)
+                {   
+                    setup.Tables[table].SyncDirection = SyncDirection.Bidirectional;
+                }
                //selecting which coloumns to add for synchronization for a particular table.
-                //setup.Tables["Orders"].Columns.AddRange(new[] { "OrderID", "OrderDate" });
-              
-               // Provision everything needed by the setup
+               //setup.Tables["Orders"].Columns.AddRange(new[] { "OrderID", "OrderDate" });
+
+                // Provision everything needed by the setup
                 var p = SyncProvision.ScopeInfo | SyncProvision.ScopeInfoClient |
                 SyncProvision.StoredProcedures | SyncProvision.TrackingTable |
                 SyncProvision.Triggers;
                 
+                
                 var progress = new SynchronousProgress<ProgressArgs>(args => Console.WriteLine($"{args.ProgressPercentage:p}:\t{args.Message}"));
-                await _syncAgent.RemoteOrchestrator.ProvisionAsync(scopeName, setup, p, progress: progress);
-
-                // Getting the server scope from server side for provisioning the local side
-                var ScopeInfo = await _syncAgent.RemoteOrchestrator.GetScopeInfoAsync(scopeName);
+                var scopeInfo=await _syncAgent.RemoteOrchestrator.ProvisionAsync(scopeName, setup, p, progress: progress);
+               // Getting the server scope from server side for provisioning the local side
+               var ScopeInfo = await _syncAgent.RemoteOrchestrator.GetScopeInfoAsync(scopeName);
 
                 // Provision everything needed (sp, triggers, tracking tables)
                 await _syncAgent.LocalOrchestrator.ProvisionAsync(ScopeInfo, p,progress:progress);
@@ -321,7 +325,6 @@ namespace SynchronizationWithDotmim.Sync.Service
             try
             {
                 var setup = new SyncSetup("ProductCategory", "Product");
-
                 // Shortcut to create a filter directly from your SyncSetup instance
                 // We are filtering all the product categories, by the ID (a GUID)
                 setup.Filters.Add("ProductCategory", "ProductCategoryID");
