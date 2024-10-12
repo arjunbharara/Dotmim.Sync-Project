@@ -25,5 +25,8 @@ namespace SynchronizationWithDotmim.Sync.Service
         void SyncApplyRemoteFailed(SyncResult result);
         //When changes failed to apply on client
         void SyncApplyLocalFailed(SyncResult result);
+
+        //Sync Method for DCDR Setup
+        Task<SyncResult> SyncDCDR(string scopeNameDCDR, string[] tables);
     }
 }

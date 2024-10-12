@@ -22,11 +22,13 @@ namespace SynchronizationWithDotmim.Sync
         private static string LocalConnectionString = null;
         private static string RemoteConnectionString = null;
         private static readonly string scopeName = "HyworksScope";
-      //  private static string _serverType = null;
+        private static readonly string scopeNameDCDR = "HyworksScope_DCDR";
+      //private static string _serverType = null;
         private static string SchemaChange = "false";
         private static string connectionString = string.Empty;
         private static string ServerID = String.Empty;
         private static string Deprovision = "false";
+        private static string DeprovisionDCDR = "false";
         //dependency injecton of service
         private static IDotmimSyncService syncService = new DotmimSyncService();
 
@@ -90,6 +92,12 @@ namespace SynchronizationWithDotmim.Sync
                     await syncService.DeprovisionAsync(scopeName);
                     return;
                 }
+                if (DeprovisionDCDR.Equals("true"))
+                {
+
+                    await syncService.DeprovisionAsync(scopeNameDCDR);
+                    return;
+                }
                 if (SchemaChange.Equals("true"))
                 {
                     var tables = new string[] { "Department", "Employee", "Task" };
@@ -104,6 +112,15 @@ namespace SynchronizationWithDotmim.Sync
                 {
                     Console.WriteLine($"Invalid IsSync Value.Unable to parse into boolean. vaue:- {isSyncstr}");
                 }
+
+
+                string IsDCDRSyncstr = ConfigurationManager.AppSettings["IsDCDRSync"];
+                bool IsDCDRSync;
+                if (!bool.TryParse(IsDCDRSyncstr, out IsDCDRSync))
+                {
+                    Console.WriteLine($"Invalid IsSync Value.Unable to parse into boolean. vaue:- {IsDCDRSyncstr}");
+                }
+
                 Task syncTask = Task.Run(async () =>
                 {
                     while (true)
@@ -118,7 +135,16 @@ namespace SynchronizationWithDotmim.Sync
                             }
                             else
                             {
-                                Console.WriteLine("Syncing is diabled on the server");
+                                Console.WriteLine("Syncing is disabled on the server");
+                            }
+                            if (IsDCDRSync)
+                            {
+                                Console.WriteLine("DC DR Syncing is enabled on the server.Starting Syncing process.");
+                                await SyncDCDR();
+                            }
+                            else
+                            {
+                                Console.WriteLine("DC DR Syncing is disabled on the server");
                             }
 
                         }
@@ -137,7 +163,7 @@ namespace SynchronizationWithDotmim.Sync
 
                     }
                 }, cts.Token);
-
+                
                 Console.ReadKey();
 
                 // Cancel the synchronization loop
@@ -165,8 +191,9 @@ namespace SynchronizationWithDotmim.Sync
         public static void assignKeys()
         {
             //registry value names
-          //  string valueName = "ServerId";
-          //  string valueName2 = "SchemaChange";
+            //  string valueName = "ServerId";
+            //  string valueName2 = "SchemaChange";
+            string valueDCDR = "DeprovisionDCDR";
             string valueName3 = "Deprovision";
             string registryKeyPath = @"DbSync";
             // Open the registry key
@@ -178,6 +205,7 @@ namespace SynchronizationWithDotmim.Sync
                    // object value = key.GetValue(valueName);
                     //object value2 = key.GetValue(valueName2);
                     object value3 = key.GetValue(valueName3);
+                    object value4 = key.GetValue(valueDCDR);
                    /* if (value != null)
                     {
 
@@ -204,6 +232,14 @@ namespace SynchronizationWithDotmim.Sync
                     else
                     {
                         Console.WriteLine("Deprovision Value not found.");
+                    }
+                    if (value4 != null)
+                    {
+                        DeprovisionDCDR = value4.ToString();
+                    }
+                    else
+                    {
+                        Console.WriteLine("DeprovisionDCDR Value not found.");
                     }
                 }
                 else
@@ -284,7 +320,7 @@ namespace SynchronizationWithDotmim.Sync
                  return;
              }*/
           
-            var tables = new string[] { "Department", "Employee", "Task" };
+            var tables = new string[] { "Products", "Customers", "Orders", "OrderDetails" };
             SyncResult res = await syncService.SyncDatabasesAsync(scopeName, tables);
             if (res.TotalChangesFailedToApplyOnServer > 0)
             {
@@ -296,20 +332,18 @@ namespace SynchronizationWithDotmim.Sync
             }
 
         }
-        //this method called when you change the mode of servers
-        /* public static void changeMode()
-         {
-             Console.WriteLine("inside ChangeMode method");
-             switchConnString(primaryConnectionString, secondaryConnectionString);
-             syncService.ReInitialize(secondaryConnectionString, primaryConnectionString,scopeName);
-
-         }*/
-
-        /* public static void switchConnString(string ps, string sc)
-         {
-             string temp = ps;
-             primaryConnectionString = sc;
-             secondaryConnectionString = temp;
-         }*/
+        public static async Task SyncDCDR()
+        {
+            var tables = new string[] {"Products", "Customers", "Orders", "OrderDetails" };
+            SyncResult res = await syncService.SyncDCDR(scopeNameDCDR, tables);
+            if (res.TotalChangesFailedToApplyOnServer > 0)
+            {
+                syncService.SyncApplyRemoteFailed(res);
+            }
+            if (res.TotalChangesFailedToApplyOnClient > 0)
+            {
+                syncService.SyncApplyLocalFailed(res);
+            }
+        }
     }
 }

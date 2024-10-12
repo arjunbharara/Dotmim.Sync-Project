@@ -510,14 +510,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SynchronizationWithDotmim.Sync.exe" size="33240">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SynchronizationWithDotmim.Sync.exe" size="42456">
       <assemblyIdentity name="SynchronizationWithDotmim.Sync" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>NuPhYzc7ksZF4/+Sy/OrIGt2Qh4lG505Q48+wmoryRU=</dsig:DigestValue>
+        <dsig:DigestValue>EKgmO+sPdBsEokO4PcpgIZbJNk+dZjWGpQi9+VZPjrw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -809,13 +809,13 @@
       <dsig:DigestValue>g9QqPSkzxtsk849i8aQiNUgyEDtAZWqqWehb+rOnGkA=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="SynchronizationWithDotmim.Sync.exe.config" size="8402">
+  <file name="SynchronizationWithDotmim.Sync.exe.config" size="8434">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>/3+GWMQaJMGzbUvUDzDikkWq4iRzHxtI/lm84XoAhGY=</dsig:DigestValue>
+      <dsig:DigestValue>NMjJ6q+R4UKHt0ORqSrF4UXqjFTKxLV6711EoTRrjoA=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>
