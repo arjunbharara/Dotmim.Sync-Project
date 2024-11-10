@@ -1,2 +1,2 @@
 # Dotmim.Sync-Project
-A samole project for doing hands on Dotmim.Sync Framework
+A sample project for doing hands on Dotmim.Sync Framework
